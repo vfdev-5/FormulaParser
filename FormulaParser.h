@@ -131,6 +131,7 @@ struct RPNToken
     union Data {
         double val;
         char op;
+        Data() : val(-123456789.0), op('e') {}
     };
 
     Type type;
@@ -199,7 +200,6 @@ protected:
     bool processToken(const std::string & t);
 
     double evaluate(const RPNExpression & expr) const;
-    bool _isValid;
 
     RPNExpression _expression;
     RPNExpression _queue;

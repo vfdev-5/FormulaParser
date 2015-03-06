@@ -130,7 +130,7 @@ RPNExpression FormulaParser::parseExpression(const std::string &input)
 
 bool FormulaParser::processToken(const std::string & t)
 {
-    std::cout << "Process token : " << t << std::endl;
+    std::cout << "--- Process token : " << t << std::endl;
 
     if (t[0] == '(')
     {
@@ -146,23 +146,18 @@ bool FormulaParser::processToken(const std::string & t)
         RPNToken token(RPNToken::OPERATOR);
         token.data.op = t[0];
 
-        std::cout << "Process operator : " << token.data.op << std::endl;
-
         // push to stack and pop off other operators with higher or equal precedence
         RPNExpression::reverse_iterator it = _stack.rbegin();
-        while (it->type == RPNToken::OPERATOR &&
-               RPNToken::priority(*it) >= RPNToken::priority(token) &&
-               it != _stack.rend())
+        while (it != _stack.rend() &&
+               it->type == RPNToken::OPERATOR &&
+               RPNToken::priority(*it) >= RPNToken::priority(token))
         {
 
-            std::cout << "Push into queue : " << it->data.op << std::endl;
+            std::cout << "-- Push into queue : " << it->data.op << std::endl;
 
             _queue.push_back(*it);
             _stack.pop_back();
             it = _stack.rbegin();
-
-            printQueue();
-            printStack();
 
         }
         _stack.push_back(token);
@@ -170,25 +165,19 @@ bool FormulaParser::processToken(const std::string & t)
     }
     else if (t[0] == ')')
     {
-
-        std::cout << "Process ')'"<< std::endl;
-
         // move operations from the stack to the queue until '('
         RPNExpression::reverse_iterator it = _stack.rbegin();
         while (it->type != RPNToken::LEFT_BRACKET)
         {
-            std::cout << "Push into queue : " << it->data.op << std::endl;
+            std::cout << "-- Push into queue : " << it->data.op << std::endl;
 
             _queue.push_back(*it);
             _stack.pop_back();
             it = _stack.rbegin();
 
-            printQueue();
-            printStack();
-
             if (it == _stack.rend())
             {
-                std::cerr << "Unbalanced number of brackets" << std::endl;
+                std::cerr << "!!! Unbalanced number of brackets !!!" << std::endl;
                 return false;
             }
 

@@ -18,7 +18,6 @@ int main(int argc, char** argv)
 
     std::cout << "input formula : " << in << std::endl;
 
-
     FormulaParser p;
     if (!p.parse(in))
         return 1;
